@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <title>Your Stylist</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+
+        .rectangle {
+            background: linear-gradient(135deg, var(--primary), #B15A63);
+            padding: 1vw;
+            border-radius: 12px;
+            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 20px;
+            align-items: center;
+            margin: 3vh;
+            margin-left: 3vw;
+            transition: all 0.3s ease; /*for animation*/
+            cursor: pointer;
+        }
+
+        .rectangle:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); /*add shadow*/
+        }
+
+        .rectangle-link { /*so that it looks nice*/
+            text-decoration: none;
+            color: inherit;
+            display: contents;
+        }
+
+        .rectangle img {
+            width: auto;
+            position: static;
+            border-radius: 1vh;
+            grid-column: 1;
+            grid-row: 1 / span 2; /*so that it takes both rows*/
+        }
+
+        p {
+            font-family: var(--main-font);
+            font-size: 4vh;
+            font-weight: 600;
+            color: #f6eaeb;
+            grid-column: 2;
+            grid-row: 2;
+            align-self: start;
+            margin-top: 0;
+        }
+
+        h4 {
+            font-family: var(--main-font);
+            font-size: 8vh;
+            font-weight: 900;
+            color: #f6eeef;
+            grid-column: 2;
+            grid-row: 1;
+            align-self: end;
+            margin-bottom: 0;
+        }
+
+        .smallRectImg {
+            height: auto;
+            width: 80%;
+            position: static;
+            border-radius: 1vh;
+            grid-column: 1;
+            grid-row: 1;
+            justify-self: center;
+            grid-row: 1 / span 2; /*so that it takes both rows*/
+            align-self: center;
+            justify-self: center;
+        }
+
+        .smallRectText {
+            font-family: var(--main-font);
+            font-size: 4vh;
+            font-weight: 600;
+            color: #f6eaeb;
+            grid-column: 2;
+            grid-row: 1 / span 2; /*so that it takes both rows*/
+            align-self: center;
+            margin-top: 0;
+        }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <script type="module">
+        import {initAuthListener} from './isSignedIn.js';
+        document.addEventListener('DOMContentLoaded', initAuthListener);
+    </script>
+
+    <header class="top-bar">
+        <div class="logo">YourStylist</div>
+        <nav class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#wardrobeSection">Wardrobe</a>
+            <a href="#testSection">Style Test</a>
+            <!-- <a href="#">Saved Outfits</a> -->
+            <a href="#generateSection">Outfit Suggestions</a>
+        </nav>
+        <div class="auth-buttons">
+            <a href="LogIn.html" id="loginButton" class="login-btn">Login</a>
+        </div>
+    </header>
+
+    <a href="#testSection" class="rectangle-link">
+        <section id="home" class="rectangle">
+            <img src="woman_main_page.png" alt="Fashionable woman"/>
+            <h4>Your Stylist -</h4>
+            <p>Your personal fashion assistant, helping you discover and organize your perfect style!</p>
+        </section>
+    </a>
+
+    <a href="Test.html" class="rectangle-link">
+        <section id="testSection" class="rectangle">
+            <img src="test.png" alt="Test icon" class="smallRectImg"/>
+            <h4>Test</h4>
+            <p>Take our quick style quiz to help your personal stylist understand your preferences, so every outfit suggestion is uniquely for you.</p>
+        </section>
+    </a>
+
+    <a href="Wardrobe.html" class="rectangle-link">
+        <section id="wardrobeSection" class="rectangle">
+            <img src="wardrobe.png" alt="Wardrobe icon" class="smallRectImg"/>
+            <h4>Wardrobe</h4>
+            <p>Effortlessly organize your wardrobe, remove items you no longer wear, and visualize all your styling possibilities in one place.</p>
+        </section>
+    </a>
+
+    <a href="Suggestions.html" class="rectangle-link">
+        <section id="generateSection" class="rectangle">
+            <img src="outfit.png" alt="Outfit icon" class="smallRectImg"/>
+            <h4>Generate an Outfit</h4>
+            <p>The outfits will be generated based on the clothes in your wardrobe and your preferences from the quiz, ensuring every suggestion matches your taste and purpose.</p>
+        </section>
+    </a>
+
+    <h3>Made by: Nika</h3>
+
+  </body>
+
+</html>
