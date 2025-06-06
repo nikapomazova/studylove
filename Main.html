@@ -1,153 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-
-    <title>Your Stylist</title>
-
-    <link rel="stylesheet" href="styles.css">
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love and Deepseek</title>
     <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
 
-        .rectangle {
-            background: linear-gradient(135deg, var(--primary), #B15A63);
-            padding: 1vw;
-            border-radius: 12px;
-            flex-direction: column;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto;
-            gap: 20px;
-            align-items: center;
-            margin: 3vh;
-            margin-left: 3vw;
-            transition: all 0.3s ease; /*for animation*/
+        /* Unified media layer (for both bg and videos) */
+        .media-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* Background image (default state) */
+        #backgroundMedia {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures full coverage */
+            object-position: center;
+        }
+
+        /* Interactive buttons (visible for testing) */
+        .interactive-area {
+            position: absolute;
+            background: transparent;
+            border: 2px dashed rgba(255, 255, 0, 0.8);
             cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s;
         }
 
-        .rectangle:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); /*add shadow*/
+        .interactive-area:hover {
+            background: rgba(255, 255, 0, 0.2);
         }
 
-        .rectangle-link { /*so that it looks nice*/
-            text-decoration: none;
-            color: inherit;
-            display: contents;
+        /* Button positions */
+        .face-area {
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20%;
+            height: 25%;
+            border-color: rgba(255, 0, 0, 0.8);
         }
 
-        .rectangle img {
-            width: auto;
-            position: static;
-            border-radius: 1vh;
-            grid-column: 1;
-            grid-row: 1 / span 2; /*so that it takes both rows*/
+        .hand-area {
+            top: 55%;
+            left: 35%;
+            width: 15%;
+            height: 15%;
+            border-color: rgba(0, 255, 0, 0.8);
         }
 
-        p {
-            font-family: var(--main-font);
-            font-size: 4vh;
-            font-weight: 600;
-            color: #f6eaeb;
-            grid-column: 2;
-            grid-row: 2;
-            align-self: start;
-            margin-top: 0;
+        .weapon-area {
+            top: 50%;
+            left: 60%;
+            width: 20%;
+            height: 25%;
+            border-color: rgba(0, 0, 255, 0.8);
         }
 
-        h4 {
-            font-family: var(--main-font);
-            font-size: 8vh;
-            font-weight: 900;
-            color: #f6eeef;
-            grid-column: 2;
-            grid-row: 1;
-            align-self: end;
-            margin-bottom: 0;
+        /* UI Menus */
+        .menu {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 3;
         }
 
-        .smallRectImg {
-            height: auto;
-            width: 80%;
-            position: static;
-            border-radius: 1vh;
-            grid-column: 1;
-            grid-row: 1;
-            justify-self: center;
-            grid-row: 1 / span 2; /*so that it takes both rows*/
-            align-self: center;
-            justify-self: center;
+        .menu-button {
+            color: white;
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s;
         }
 
-        .smallRectText {
-            font-family: var(--main-font);
-            font-size: 4vh;
-            font-weight: 600;
-            color: #f6eaeb;
-            grid-column: 2;
-            grid-row: 1 / span 2; /*so that it takes both rows*/
-            align-self: center;
-            margin-top: 0;
+        .side-menu {
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 3;
         }
-
     </style>
+</head>
+<body>
+    <!-- Unified media layer -->
+    <div class="media-layer">
+        <!-- 
+            Single element for both bg and videos.
+            Starts as background image, swaps to video on interaction.
+        -->
+        <img id="backgroundMedia" src="/Users/Emily/Downloads/Grade 12 CS/summative/Screen Shot 2025-06-06 at 12.17.59 PM.png">
+    </div>
 
-  </head>
+    <!-- Interactive buttons -->
+    <button class="interactive-area face-area" onclick="swapMedia('/Users/Emily/Downloads/Grade 12 CS/summative/Untitled Video June 6, 2025 12_12 PM.mp4')">Face</button>
+    <button class="interactive-area hand-area" onclick="swapMedia('https://example.com/hand_video.mp4')">Hand</button>
+    <button class="interactive-area weapon-area" onclick="swapMedia('https://example.com/weapon_video.mp4')">Weapon</button>
 
-  <body>
+    <!-- Bottom menu -->
+    <div class="menu">
+        <button class="menu-button" onclick="window.location.href='Quiz.html'" >Gain coins!</button>
+        <button class="menu-button">Encounters</button>
+        <button class="menu-button">Messages</button>
+        <button class="menu-button">Base</button>
+        <button class="menu-button">Combat</button>
+    </div>
 
-    <script type="module">
-        import {initAuthListener} from './isSignedIn.js';
-        document.addEventListener('DOMContentLoaded', initAuthListener);
+    <!-- Side menu -->
+    <div class="side-menu">
+        
+    </div>
+
+    <script>
+        // Global reference to avoid duplicate elements
+        let currentVideo = null;
+
+        function swapMedia(mediaUrl) {
+            const mediaLayer = document.querySelector('.media-layer');
+            const bgMedia = document.getElementById('backgroundMedia');
+            
+            // If video is already playing, remove it
+            if (currentVideo) {
+                mediaLayer.removeChild(currentVideo);
+                currentVideo = null;
+            }
+
+            // Create video element
+            if (mediaUrl.endsWith('.mp4')) {
+                currentVideo = document.createElement('video');
+                currentVideo.src = mediaUrl;
+                currentVideo.autoplay = true;
+                currentVideo.loop = false;
+                currentVideo.muted = false;
+                currentVideo.style.width = '100%';
+                currentVideo.style.height = '100%';
+                currentVideo.style.objectFit = 'cover';
+                currentVideo.style.objectPosition = 'center';
+                
+                // Replace background with video
+                mediaLayer.insertBefore(currentVideo, bgMedia);
+                bgMedia.style.display = 'none';
+                
+                // Restore background when video ends
+                currentVideo.onended = function() {
+                    mediaLayer.removeChild(currentVideo);
+                    bgMedia.style.display = 'block';
+                    currentVideo = null;
+                };
+            } 
+            // For images (if needed)
+            else {
+                bgMedia.src = mediaUrl;
+            }
+        }
     </script>
-
-    <header class="top-bar">
-        <div class="logo">YourStylist</div>
-        <nav class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#wardrobeSection">Wardrobe</a>
-            <a href="#testSection">Style Test</a>
-            <!-- <a href="#">Saved Outfits</a> -->
-            <a href="#generateSection">Outfit Suggestions</a>
-        </nav>
-        <div class="auth-buttons">
-            <a href="LogIn.html" id="loginButton" class="login-btn">Login</a>
-        </div>
-    </header>
-
-    <a href="#testSection" class="rectangle-link">
-        <section id="home" class="rectangle">
-            <img src="woman_main_page.png" alt="Fashionable woman"/>
-            <h4>Your Stylist -</h4>
-            <p>Your personal fashion assistant, helping you discover and organize your perfect style!</p>
-        </section>
-    </a>
-
-    <a href="Test.html" class="rectangle-link">
-        <section id="testSection" class="rectangle">
-            <img src="test.png" alt="Test icon" class="smallRectImg"/>
-            <h4>Test</h4>
-            <p>Take our quick style quiz to help your personal stylist understand your preferences, so every outfit suggestion is uniquely for you.</p>
-        </section>
-    </a>
-
-    <a href="Wardrobe.html" class="rectangle-link">
-        <section id="wardrobeSection" class="rectangle">
-            <img src="wardrobe.png" alt="Wardrobe icon" class="smallRectImg"/>
-            <h4>Wardrobe</h4>
-            <p>Effortlessly organize your wardrobe, remove items you no longer wear, and visualize all your styling possibilities in one place.</p>
-        </section>
-    </a>
-
-    <a href="Suggestions.html" class="rectangle-link">
-        <section id="generateSection" class="rectangle">
-            <img src="outfit.png" alt="Outfit icon" class="smallRectImg"/>
-            <h4>Generate an Outfit</h4>
-            <p>The outfits will be generated based on the clothes in your wardrobe and your preferences from the quiz, ensuring every suggestion matches your taste and purpose.</p>
-        </section>
-    </a>
-
-    <h3>Made by: Nika</h3>
-
-  </body>
-
+</body>
 </html>
