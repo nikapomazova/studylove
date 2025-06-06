@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love and Deepseek</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Unified media layer (for both bg and videos) */
+        .media-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* Background image (default state) */
+        #backgroundMedia {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures full coverage */
+            object-position: center;
+        }
+
+        /* Interactive buttons (visible for testing) */
+        .interactive-area {
+            position: absolute;
+            background: transparent;
+            border: 2px dashed rgba(255, 255, 0, 0.8);
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .interactive-area:hover {
+            background: rgba(255, 255, 0, 0.2);
+        }
+
+        /* Button positions */
+        .face-area {
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20%;
+            height: 25%;
+            border-color: rgba(255, 0, 0, 0.8);
+        }
+
+        .hand-area {
+            top: 55%;
+            left: 35%;
+            width: 15%;
+            height: 15%;
+            border-color: rgba(0, 255, 0, 0.8);
+        }
+
+        .weapon-area {
+            top: 50%;
+            left: 60%;
+            width: 20%;
+            height: 25%;
+            border-color: rgba(0, 0, 255, 0.8);
+        }
+
+        /* UI Menus */
+        .menu {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 3;
+        }
+
+        .menu-button {
+            color: white;
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .side-menu {
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Unified media layer -->
+    <div class="media-layer">
+        <!-- 
+            Single element for both bg and videos.
+            Starts as background image, swaps to video on interaction.
+        -->
+        <img id="backgroundMedia" src="/Users/Emily/Downloads/Grade 12 CS/summative/Screen Shot 2025-06-06 at 12.17.59 PM.png">
+    </div>
+
+    <!-- Interactive buttons -->
+    <button class="interactive-area face-area" onclick="swapMedia('/Users/Emily/Downloads/Grade 12 CS/summative/Untitled Video June 6, 2025 12_12 PM.mp4')">Face</button>
+    <button class="interactive-area hand-area" onclick="swapMedia('https://example.com/hand_video.mp4')">Hand</button>
+    <button class="interactive-area weapon-area" onclick="swapMedia('https://example.com/weapon_video.mp4')">Weapon</button>
+
+    <!-- Bottom menu -->
+    <div class="menu">
+        <button class="menu-button" onclick="QuizPage.java">Story</button>
+        <button class="menu-button">Encounters</button>
+        <button class="menu-button">Messages</button>
+        <button class="menu-button">Base</button>
+        <button class="menu-button">Combat</button>
+    </div>
+
+    <!-- Side menu -->
+    <div class="side-menu">
+        
+    </div>
+
+    <script>
+        // Global reference to avoid duplicate elements
+        let currentVideo = null;
+
+        function swapMedia(mediaUrl) {
+            const mediaLayer = document.querySelector('.media-layer');
+            const bgMedia = document.getElementById('backgroundMedia');
+            
+            // If video is already playing, remove it
+            if (currentVideo) {
+                mediaLayer.removeChild(currentVideo);
+                currentVideo = null;
+            }
+
+            // Create video element
+            if (mediaUrl.endsWith('.mp4')) {
+                currentVideo = document.createElement('video');
+                currentVideo.src = mediaUrl;
+                currentVideo.autoplay = true;
+                currentVideo.loop = false;
+                currentVideo.muted = false;
+                currentVideo.style.width = '100%';
+                currentVideo.style.height = '100%';
+                currentVideo.style.objectFit = 'cover';
+                currentVideo.style.objectPosition = 'center';
+                
+                // Replace background with video
+                mediaLayer.insertBefore(currentVideo, bgMedia);
+                bgMedia.style.display = 'none';
+                
+                // Restore background when video ends
+                currentVideo.onended = function() {
+                    mediaLayer.removeChild(currentVideo);
+                    bgMedia.style.display = 'block';
+                    currentVideo = null;
+                };
+            } 
+            // For images (if needed)
+            else {
+                bgMedia.src = mediaUrl;
+            }
+        }
+    </script>
+</body>
+</html>
