@@ -6,6 +6,7 @@ const nameElement = document.getElementById("name");
 const emailElement = document.getElementById("email");
 const passElement = document.getElementById("pass");
 const passRElement = document.getElementById("passRepeat");
+let errorElement = document.getElementById("errorDisplay");
 
 nameElement.addEventListener("input", changeButton);
 emailElement.addEventListener("input", changeButton);
