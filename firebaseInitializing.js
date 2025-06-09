@@ -11,12 +11,13 @@ import {
 import { getFirestore, doc, setDoc, collection, addDoc, query, where, getDocs, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCQ907RTSmRyw38xBoE9kOK7af4Ut4wIG0",
-    authDomain: "yourstylist-450ba.firebaseapp.com",
-    projectId: "yourstylist-450ba",
-    storageBucket: "yourstylist-450ba.firebasestorage.app",
-    messagingSenderId: "774264219494",
-    appId: "1:774264219494:web:c207dfc2e053e87653caa7"
+    apiKey: "AIzaSyBgcaBwACCzLYkS3hbYwrrd3h8DQd0xPWY",
+    authDomain: "lovegame-a32b6.firebaseapp.com",
+    projectId: "lovegame-a32b6",
+    storageBucket: "lovegame-a32b6.firebasestorage.app",
+    messagingSenderId: "179236464018",
+    appId: "1:179236464018:web:1a657b7962611816294d4b",
+    measurementId: "G-G2EFKT1GLH"
 };
 
 const app = initializeApp(firebaseConfig);
