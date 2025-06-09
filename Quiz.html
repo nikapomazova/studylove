@@ -243,7 +243,40 @@
         </div>
     </div>
     
-    <script>
+    <script type="module">
+
+        import { auth, onAuthStateChanged, getDocs, collection, db, getDoc, doc } from "./firebaseInitializing.js?v1.0.0";
+
+        let uid = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                uid = user.uid;
+
+                const userDocRef = doc(db, "users", uid);
+                const userDocSnap = await getDoc(userDocRef);
+                let quizAnswers = [];
+
+                if (userDocSnap.exists()) {
+
+                }
+
+            } else {
+                console.log("No user is signed in.");
+            }
+        });
+
+        async function saveUserMoney(userId, amount) {
+            try {
+                await setDoc(doc(db, "users", userId), {
+                    money: amount
+                }, { merge: true }); // merge keeps other fields untouched
+                console.log("Money saved!");
+            } catch (error) {
+                console.error("Error saving money: ", error);
+            }
+        }
+
         // App State
         let currentDifficulty = 1;
         let correctAnswerIndex = -1;
@@ -354,6 +387,8 @@
             
             // Save coins to localStorage
             localStorage.setItem('quizCoins', coins.toString());
+
+            saveUserMoney(uid, coins.toString());
             
             // Disable all buttons after answering
             for (const button of optionButtons) {
