@@ -1,4 +1,4 @@
-import { auth, onAuthStateChanged, signOut } from "./firebaseInitializing.js?v=1.0";
+import { auth, onAuthStateChanged, signOut } from "./firebaseInitializing.js?v=1.0.4";
 
 let loginButton;
 

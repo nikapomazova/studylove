@@ -1,6 +1,6 @@
 console.log("Script loaded!");
 
-import { auth, createUserWithEmailAndPassword, sendEmailVerification, doc, setDoc, db } from "./firebaseInitializing.js?v=1.0.2";
+import { auth, createUserWithEmailAndPassword, sendEmailVerification, doc, setDoc, db } from "./firebaseInitializing.js?v=1.0.4";
 
 const nameElement = document.getElementById("name");
 const emailElement = document.getElementById("email");
