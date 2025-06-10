@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #303f9f;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .chat-area {
+      flex-grow: 1;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 6px;
+      background-color: #fff;
+    }
+
+    .message {
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px 0;
+      max-width: 70%;
+    }
+
+    .user-message {
+      background-color: #d1c4e9;
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    .ai-message {
+      background-color: #e3f2fd;
+      align-self: flex-start;
+      text-align: left;
+    }
+
+    .input-area {
+      display: flex;
+      margin-top: 15px;
+    }
+
+    .input-area input {
+      flex-grow: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .input-area button {
+      padding: 10px 20px;
+      margin-left: 10px;
+      background-color: #303f9f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .input-area button:hover {
+      background-color: #283593;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">Chat</div>
+    <div class="chat-area" id="chatArea"></div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button id="sendButton">Send</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, doc, onAuthStateChanged, updateDoc, arrayUnion, setDoc, getDoc } from './firebaseInitializing.js?v1.0.0';
+
+    const apiKey = AIzaSyAaELFaZFNagkYJxrcMeq6UBBbH4odYTmc; // 🔥 Replace with your Gemini API key
+    let uid = null;
+
+    const SYSTEM_PROMPT = "You are a nice friend of the user. You help them feel better and motivate them to study and work, always bring their mood up.";
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        uid = user.uid;
+        const ref = doc(db, "users", uid);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) {
+          await setDoc(ref, { conversation: [] });
+        }
+      } else {
+        alert("You must be signed in to use the chat.");
+        window.location.href("/LogIn.html");
+      }
+    });
+
+    const chatArea = document.getElementById('chatArea');
+    const userInput = document.getElementById('userInput');
+    const sendButton = document.getElementById('sendButton');
+
+    sendButton.addEventListener('click', handleUserMessage);
+    userInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') handleUserMessage();
+    });
+
+    async function handleUserMessage() {
+      const promptText = userInput.value.trim();
+      if (!promptText) return;
+
+      displayMessage(promptText, 'user');
+      userInput.value = '';
+      await saveToFirestore({ role: 'user', content: promptText });
+
+      const aiResponse = await getGeminiResponse(promptText);
+      displayMessage(aiResponse, 'ai');
+      await saveToFirestore({ role: 'ai', content: aiResponse });
+    }
+
+    function displayMessage(text, role) {
+      const msg = document.createElement('div');
+      msg.className = `message ${role}-message`;
+      msg.textContent = text;
+      chatArea.appendChild(msg);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    async function saveToFirestore(msgObj) {
+      if (!uid) return;
+      const ref = doc(db, "users", uid);
+      await updateDoc(ref, {
+        conversation: arrayUnion({
+          ...msgObj,
+          timestamp: new Date().toISOString()
+        })
+      });
+    }
+
+    async function getGeminiResponse(userInputText) {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+      
+      const body = {
+        contents: [
+          { parts: [{ text: SYSTEM_PROMPT }] },
+          { parts: [{ text: userInputText }] }
+        ]
+      };
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        console.error("Gemini error:", await response.text());
+        return "Sorry, something went wrong.";
+      }
+
+      const data = await response.json();
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response from Gemini.";
+    }
+  </script>
+</body>
+</html>
