@@ -117,7 +117,7 @@
 </head>
 <body>
     <section>
-        <button id="menuB" href="/main.html" class="menu-button">
+        <button id="menuB" onclick="window.location.href='main.html'" class="menu-button">
             Home
         </button>
     </section>
@@ -131,10 +131,6 @@
     </div>
 
   <script type="module">
-
-    // document.getElementById("menuB").addEventListener("click", function() {
-    //     window.location.href = "/main.html";
-    // });
 
     import { auth, db, doc, onAuthStateChanged, updateDoc, arrayUnion, setDoc, getDoc } from "./firebaseInitializing.js?v1.0.3";
 
