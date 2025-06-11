@@ -336,7 +336,9 @@ button, input, textarea {
     font-size: 3vh;
     width: 10vw;
     height: 7vh;
+    left: 16px;
     transition: transform 0.3s ease-in-out;
+    position: absolute;
 }
 
 .menu-button:hover {
