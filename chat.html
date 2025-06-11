@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chat</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,21 +13,28 @@
       background-color: #f9f9f9;
     }
 
+    section {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: left;
+    }
+
     .container {
-      max-width: 80vw;
-      margin: 0 auto;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      height: 90vh;
+        max-width: 80vw;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
     }
 
     .title {
-      font-size: 28px;
-      font-weight: bold;
-      color: #303f9f;
-      text-align: center;
-      margin-bottom: 10px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #303f9f;
+        text-align: center;
+        margin-bottom: 10px;
     }
 
     .chat-area {
@@ -48,7 +56,7 @@
     }
 
     .user-message {
-        background-color: #d1c4e9;
+        background-color: #edb4ba;
         align-self: flex-end;
         text-align: right;
         border-top-left-radius: 15px;
@@ -68,22 +76,22 @@
     }
 
     .input-area {
-      display: flex;
-      margin-top: 15px;
+        display: flex;
+        margin-top: 15px;
     }
 
     .input-area input {
-      flex-grow: 1;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+        flex-grow: 1;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
     }
 
     .input-area button {
       padding: 10px 20px;
       margin-left: 10px;
-      background-color: #303f9f;
+      background-color: #772c33;
       color: white;
       border: none;
       border-radius: 4px;
@@ -92,7 +100,7 @@
     }
 
     .input-area button:hover {
-      background-color: #283593;
+        background-color: #772c33;
     }
   </style>
 </head>
@@ -106,7 +114,18 @@
     </div>
   </div>
 
+    <section>
+        <button id="menuB" href="/Menu.html" class="menu-button">
+            Home
+        </button>
+    </section>
+
   <script type="module">
+
+    document.getElementById("menuB").addEventListener("click", function() {
+        window.location.href = "/main.html";
+    });
+
     import { auth, db, doc, onAuthStateChanged, updateDoc, arrayUnion, setDoc, getDoc } from "./firebaseInitializing.js?v1.0.3";
 
     const apiKey = "AIzaSyAaELFaZFNagkYJxrcMeq6UBBbH4odYTmc";
