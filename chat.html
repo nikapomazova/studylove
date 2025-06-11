@@ -15,30 +15,10 @@
     section {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: left;
         padding: 1% 2%;
         background-color: #f9f9f9;
         height: 60px;
-    }
-
-    .top-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 60px;
-        padding: 0 2%;
-        background-color: #f9f9f9;
-    }
-
-    .top-bar .left,
-    .top-bar .right {
-        flex: 1;
-    }
-
-    .top-bar .center {
-        flex: 2;
-        display: flex;
-        justify-content: center;
     }
 
     .title {
@@ -135,14 +115,11 @@
 </head>
 <body>
     <section>
-        <div class="left">
-            <button id="menuB" href="/Menu.html" class="menu-button">Home</button>
-        </div>
-        <div class="center">
-            <div class="title">Chat</div>
-        </div>
-        <div class="right"></div>
+        <button id="menuB" href="/Menu.html" class="menu-button">
+            Home
+        </button>
     </section>
+    <div class="title">Chat</div>
     <div class="container">
         <div class="chat-area" id="chatArea"></div>
         <div class="input-area">
