@@ -99,7 +99,7 @@
   <script type="module">
     import { auth, db, doc, onAuthStateChanged, updateDoc, arrayUnion, setDoc, getDoc } from "./firebaseInitializing.js?v1.0.3";
 
-    const apiKey = "AIzaSyAaELFaZFNagkYJxrcMeq6UBBbH4odYTmc"; // 🔥 Replace with your Gemini API key
+    const apiKey = "AIzaSyAaELFaZFNagkYJxrcMeq6UBBbH4odYTmc";
     let uid = null;
 
     const SYSTEM_PROMPT = "You are a nice friend of the user. You help them feel better and motivate them to study and work, always bring their mood up.";
@@ -128,24 +128,45 @@
     });
 
     async function handleUserMessage() {
-      const promptText = userInput.value.trim();
-      if (!promptText) return;
+        const promptText = userInput.value.trim();
+        if (!promptText) return;
 
-      displayMessage(promptText, 'user');
-      userInput.value = '';
-      await saveToFirestore({ role: 'user', content: promptText });
+        displayMessage(promptText, 'user');
+        userInput.value = '';
+        await saveToFirestore({ role: 'user', content: promptText });
 
-      const aiResponse = await getGeminiResponse(promptText);
-      displayMessage(aiResponse, 'ai');
-      await saveToFirestore({ role: 'ai', content: aiResponse });
+        const aiResponse = await getGeminiResponse(promptText);
+        displayMessage(aiResponse, 'ai');
+        await saveToFirestore({ role: 'ai', content: aiResponse });
     }
 
+    async function loadConversation() {
+        if (!uid) return;
+
+        const ref = doc(db, "users", uid);
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+            const data = snap.data();
+            const conversation = data.conversation || [];
+
+            // Sort by timestamp
+            conversation.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+            // Display each message
+            for (const message of conversation) {
+                displayMessage(message.content, message.role);
+            }
+        }
+    }
+
+
     function displayMessage(text, role) {
-      const msg = document.createElement('div');
-      msg.className = `message ${role}-message`;
-      msg.textContent = text;
-      chatArea.appendChild(msg);
-      chatArea.scrollTop = chatArea.scrollHeight;
+        const msg = document.createElement('div');
+        msg.className = `message ${role}-message`;
+        msg.textContent = text;
+        chatArea.appendChild(msg);
+        chatArea.scrollTop = chatArea.scrollHeight;
     }
 
     async function saveToFirestore(msgObj) {
