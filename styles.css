@@ -329,6 +329,7 @@ button, input, textarea {
     cursor: pointer;
     padding: 1.5vh 1.5vw;
     background-color: #772c33;
+    position: relative;
     color: white;
     border-radius: 2vh;
     text-decoration: none;
