@@ -33,14 +33,14 @@ document.getElementById("loginButton").addEventListener("click", async () => {
         }
     
         //redirecting to main
-        window.location.href = '/Main.html';
+        window.location.href = './main.html';
       } catch (error) {
         //handling specific errors
         switch(error.code) {
           case 'auth/user-not-found':
             errorText.textContent = 'Email not registered. Sign up first.';
             if (confirm("Go to sign up?")) {
-                window.location.href = "/index.html";
+                window.location.href = "./index.html";
             }
             break;
           case 'auth/wrong-password':
