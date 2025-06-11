@@ -13,11 +13,19 @@
     }
 
     section {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-        align-items: left;
-        padding: 1% 1%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1% 2%;
+        background-color: #f9f9f9;
+        height: 60px;
+    }
+
+    .title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #772c33;
+        margin: 0;
     }
 
     .container {
@@ -26,7 +34,7 @@
         padding: 20px;
         display: flex;
         flex-direction: column;
-        height: 90vh;
+        height: calc(100vh - 60px);
     }
 
     .title {
