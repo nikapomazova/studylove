@@ -41,5 +41,5 @@ export function updateUIForLoggedOutUser() {
         loginButton.onclick = () => window.location.href = "/LogIn.html";
     }
     alert("You are not logged in. Redirecting to login screen");
-    window.location.href = '/LogIn.html';
+    window.location.href = './LogIn.html';
 }
