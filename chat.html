@@ -109,6 +109,7 @@
         uid = user.uid;
         const ref = doc(db, "users", uid);
         const snap = await getDoc(ref);
+        await loadConversation();
         if (!snap.exists()) {
           await setDoc(ref, { conversation: [] });
         }
