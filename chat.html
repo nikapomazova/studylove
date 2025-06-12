@@ -164,161 +164,235 @@
         </div>
     </div>
 
-  <script type="module">
-    import { auth, db, doc, onAuthStateChanged, updateDoc, arrayUnion, setDoc, getDoc } from "./firebaseInitializing.js?v1.0.3";
-
-    const apiKey = "AIzaSyAaELFaZFNagkYJxrcMeq6UBBbH4odYTmc";
-    let uid = null;
-
-    let userMessageCount = parseInt(localStorage.getItem('userMessageCount')) || 0;
-    let intimacyLevel = Math.floor(userMessageCount / 10) + 1;
-
-    const SYSTEM_PROMPT = "You are a nice friend of the user. You help them feel better and motivate them to study and work, always bring their mood up. Act human, not too much on one occasion. Answer concisely but with affection.";
-
-    const chatArea = document.getElementById('chatArea');
-    const userInput = document.getElementById('userInput');
-    const sendButton = document.getElementById('sendButton');
-    const intimacyDisplay = document.getElementById('intimacyDisplay');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-
-    // Initialize progress display
-    updateProgressDisplay();
-
-    function updateProgressDisplay() {
-        const messagesToNextLevel = 10 - (userMessageCount % 10);
-        const progressPercentage = ((userMessageCount % 10) / 10) * 100;
-        
-        intimacyDisplay.textContent = `Intimacy Level: ${intimacyLevel}`;
-        progressFill.style.width = `${progressPercentage}%`;
-        progressText.textContent = `${userMessageCount % 10}/10 messages to next level`;
-        
-        // Add celebration effect when leveling up
-        if (userMessageCount % 10 === 0 && userMessageCount > 0) {
-            progressFill.style.backgroundColor = '#ffcc00';
-            setTimeout(() => {
-                progressFill.style.backgroundColor = '#d98890';
-            }, 1000);
-        }
-    }
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        uid = user.uid;
-        const ref = doc(db, "users", uid);
-        const snap = await getDoc(ref);
-        await loadConversation();
-        if (!snap.exists()) {
-          await setDoc(ref, { conversation: [] });
-        }
-      } else {
-        alert("You must be signed in to use the chat.");
-        window.location.href = "/LogIn.html";
+    <script type="module">
+      import { auth, db, doc, onAuthStateChanged, updateDoc, arrayUnion, setDoc, getDoc } from "./firebaseInitializing.js?v1.0.3";
+  
+      const apiKey = "AIzaSyAaELFaZFNagkYJxrcMeq6UBBbH4odYTmc";
+      let uid = null;
+      let coins = parseInt(localStorage.getItem('quizCoins')) || 0;
+  
+      let userMessageCount = parseInt(localStorage.getItem('userMessageCount')) || 0;
+      let intimacyLevel = Math.floor(userMessageCount / 10) + 1;
+  
+      const SYSTEM_PROMPT = "You are a nice friend of the user. You help them feel better and motivate them to study and work, always bring their mood up. Act human, not too much on one occasion. Answer concisely but with affection.";
+  
+      const chatArea = document.getElementById('chatArea');
+      const userInput = document.getElementById('userInput');
+      const sendButton = document.getElementById('sendButton');
+      const intimacyDisplay = document.getElementById('intimacyDisplay');
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+  
+      // Initialize progress display
+      updateProgressDisplay();
+  
+      function updateProgressDisplay() {
+          const messagesToNextLevel = 10 - (userMessageCount % 10);
+          const progressPercentage = ((userMessageCount % 10) / 10) * 100;
+          
+          intimacyDisplay.textContent = `Intimacy Level: ${intimacyLevel}`;
+          progressFill.style.width = `${progressPercentage}%`;
+          progressText.textContent = `${userMessageCount % 10}/10 messages to next level`;
+          
+          // Add celebration effect when leveling up
+          if (userMessageCount % 10 === 0 && userMessageCount > 0) {
+              progressFill.style.backgroundColor = '#ffcc00';
+              setTimeout(() => {
+                  progressFill.style.backgroundColor = '#d98890';
+              }, 1000);
+          }
       }
-    });
-
-    sendButton.addEventListener('click', handleUserMessage);
-    userInput.addEventListener('keypress', e => {
-      if (e.key === 'Enter') handleUserMessage();
-    });
-
-    async function handleUserMessage() {
-        const promptText = userInput.value.trim();
-        if (!promptText) return;
-
-        userMessageCount++;
-        intimacyLevel = Math.floor(userMessageCount / 10) + 1;
-        localStorage.setItem('userMessageCount', userMessageCount);
-        localStorage.setItem('intimacyLevel', intimacyLevel);
-
-        updateProgressDisplay();
-
-        displayMessage(promptText, 'user');
-        userInput.value = '';
-        await saveToFirestore({ role: 'user', content: promptText });
-
-        const aiResponse = await getGeminiResponse(promptText);
-        displayMessage(aiResponse, 'ai');
-        await saveToFirestore({ role: 'ai', content: aiResponse });
-        
-        if (typeof BroadcastChannel !== 'undefined') {
-            const channel = new BroadcastChannel('intimacy_updates');
-            channel.postMessage({ intimacyLevel });
+  
+      function showMessageModal(title, message) {
+          const modal = document.createElement('div');
+          modal.style.position = 'fixed';
+          modal.style.top = '0';
+          modal.style.left = '0';
+          modal.style.width = '100%';
+          modal.style.height = '100%';
+          modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+          modal.style.display = 'flex';
+          modal.style.justifyContent = 'center';
+          modal.style.alignItems = 'center';
+          modal.style.zIndex = '1000';
+          
+          const content = document.createElement('div');
+          content.style.backgroundColor = 'white';
+          content.style.padding = '20px';
+          content.style.borderRadius = '8px';
+          content.style.maxWidth = '80%';
+          content.style.textAlign = 'center';
+          
+          const titleEl = document.createElement('h3');
+          titleEl.textContent = title;
+          titleEl.style.color = '#772c33';
+          
+          const messageEl = document.createElement('p');
+          messageEl.textContent = message;
+          
+          const button = document.createElement('button');
+          button.textContent = 'OK';
+          button.style.marginTop = '15px';
+          button.style.padding = '8px 16px';
+          button.style.backgroundColor = '#772c33';
+          button.style.color = 'white';
+          button.style.border = 'none';
+          button.style.borderRadius = '4px';
+          button.style.cursor = 'pointer';
+          
+          button.addEventListener('click', () => {
+              document.body.removeChild(modal);
+          });
+          
+          content.appendChild(titleEl);
+          content.appendChild(messageEl);
+          content.appendChild(button);
+          modal.appendChild(content);
+          document.body.appendChild(modal);
+      }
+  
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          uid = user.uid;
+          const ref = doc(db, "users", uid);
+          const snap = await getDoc(ref);
+          await loadConversation();
+          if (!snap.exists()) {
+            await setDoc(ref, { conversation: [] });
+          }
+        } else {
+          alert("You must be signed in to use the chat.");
+          window.location.href = "/LogIn.html";
         }
-    }
-
-    async function loadConversation() {
+      });
+  
+      sendButton.addEventListener('click', handleUserMessage);
+      userInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') handleUserMessage();
+      });
+  
+      async function handleUserMessage() {
+          const promptText = userInput.value.trim();
+          if (!promptText) return;
+  
+          // Check if user has enough coins
+          if (coins < 5) {
+              showMessageModal('Not Enough Coins', 'You need at least 5 coins to send a message. Play the quiz to earn more coins!');
+              return;
+          }
+  
+          // Deduct coins
+          coins -= 5;
+          localStorage.setItem('quizCoins', coins.toString());
+          
+          // Notify other tabs about coin change
+          if (typeof BroadcastChannel !== 'undefined') {
+              const coinChannel = new BroadcastChannel('coin_updates');
+              coinChannel.postMessage({ coins });
+          }
+  
+          userMessageCount++;
+          intimacyLevel = Math.floor(userMessageCount / 10) + 1;
+          localStorage.setItem('userMessageCount', userMessageCount);
+          localStorage.setItem('intimacyLevel', intimacyLevel);
+  
+          updateProgressDisplay();
+  
+          displayMessage(promptText, 'user');
+          userInput.value = '';
+          await saveToFirestore({ role: 'user', content: promptText });
+  
+          const aiResponse = await getGeminiResponse(promptText);
+          displayMessage(aiResponse, 'ai');
+          await saveToFirestore({ role: 'ai', content: aiResponse });
+          
+          if (typeof BroadcastChannel !== 'undefined') {
+              const channel = new BroadcastChannel('intimacy_updates');
+              channel.postMessage({ intimacyLevel });
+          }
+      }
+  
+      // Listen for coin updates from other tabs
+      if (typeof BroadcastChannel !== 'undefined') {
+          const coinChannel = new BroadcastChannel('coin_updates');
+          coinChannel.addEventListener('message', (event) => {
+              coins = event.data.coins;
+              localStorage.setItem('quizCoins', coins.toString());
+          });
+      }
+  
+      async function loadConversation() {
+          if (!uid) return;
+  
+          const ref = doc(db, "users", uid);
+          const snap = await getDoc(ref);
+  
+          if (snap.exists()) {
+              const data = snap.data();
+              const conversation = data.conversation || [];
+  
+              // Sort by timestamp
+              conversation.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  
+              // Display each message
+              for (const message of conversation) {
+                  displayMessage(message.content, message.role);
+              }
+              
+              // Update message count from loaded conversation
+              userMessageCount = conversation.filter(m => m.role === 'user').length;
+              intimacyLevel = Math.floor(userMessageCount / 10) + 1;
+              updateProgressDisplay();
+          }
+      }
+  
+      function displayMessage(text, role) {
+          const msg = document.createElement('div');
+          msg.className = `message ${role}-message`;
+          msg.textContent = text;
+          chatArea.appendChild(msg);
+          chatArea.scrollTop = chatArea.scrollHeight;
+      }
+  
+      async function saveToFirestore(msgObj) {
         if (!uid) return;
-
         const ref = doc(db, "users", uid);
-        const snap = await getDoc(ref);
-
-        if (snap.exists()) {
-            const data = snap.data();
-            const conversation = data.conversation || [];
-
-            // Sort by timestamp
-            conversation.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-            // Display each message
-            for (const message of conversation) {
-                displayMessage(message.content, message.role);
-            }
-            
-            // Update message count from loaded conversation
-            userMessageCount = conversation.filter(m => m.role === 'user').length;
-            intimacyLevel = Math.floor(userMessageCount / 10) + 1;
-            updateProgressDisplay();
-        }
-    }
-
-    function displayMessage(text, role) {
-        const msg = document.createElement('div');
-        msg.className = `message ${role}-message`;
-        msg.textContent = text;
-        chatArea.appendChild(msg);
-        chatArea.scrollTop = chatArea.scrollHeight;
-    }
-
-    async function saveToFirestore(msgObj) {
-      if (!uid) return;
-      const ref = doc(db, "users", uid);
-      await updateDoc(ref, {
-        conversation: arrayUnion({
-          ...msgObj,
-          timestamp: new Date().toISOString()
-        })
-      });
-    }
-
-    async function getGeminiResponse(userInputText) {
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            contents: [
-            {
-                role: "user",
-                parts: [
-                { text: SYSTEM_PROMPT + userInputText }
-                ]
-            }
-            ]
-        })
-      });
-
-      if (!response.ok) {
-        console.error("Gemini error:", await response.text());
-        return "Sorry, something went wrong.";
+        await updateDoc(ref, {
+          conversation: arrayUnion({
+            ...msgObj,
+            timestamp: new Date().toISOString()
+          })
+        });
       }
-
-      const data = await response.json();
-      return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response from Gemini.";
-    }
-  </script>
-</body>
-</html>
+  
+      async function getGeminiResponse(userInputText) {
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              contents: [
+              {
+                  role: "user",
+                  parts: [
+                  { text: SYSTEM_PROMPT + userInputText }
+                  ]
+              }
+              ]
+          })
+        });
+  
+        if (!response.ok) {
+          console.error("Gemini error:", await response.text());
+          return "Sorry, something went wrong.";
+        }
+  
+        const data = await response.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response from Gemini.";
+      }
+    </script>
+  </body>
+  </html>
