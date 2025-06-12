@@ -230,8 +230,23 @@
             // Add more levels as needed
         };
 
-        function playVideoBasedOnIntimacy(area) {
-            const intimacyLevel = parseInt(localStorage.getItem('intimacyLevel')) || 1;
+        async function playVideoBasedOnIntimacy(area) {
+            // const intimacyLevel = parseInt(localStorage.getItem('intimacyLevel')) || 1;
+
+            let intimacyLevel = null;
+
+            if (uid) {
+                const ref = doc(db, "users", uid);
+                const snap = await getDoc(ref);
+
+                if (!snap.exists()) return;
+
+                const data = snap.data();
+                const messages = data.conversation || [];
+
+                intimacyLevel = Math.floor(messages.filter(msg => msg.role === "user").length / 10) + 1;
+            }
+
             const videos = videoMap[intimacyLevel] || videoMap[1]; // Default to level 1 if no mapping exists
             
             let videoFile;
@@ -300,6 +315,8 @@
 
             const coins = data.coins || 0;
             const intimacyLevel = Math.floor(messages.filter(msg => msg.role === "user").length / 10) + 1;
+
+            console.log("intimacy level: " + intimacyLevel + ". coins: " + coins);
 
             document.getElementById('coinValue').textContent =
             `${coins} 🪙`;
