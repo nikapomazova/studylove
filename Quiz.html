@@ -336,11 +336,20 @@
                 });
         }
         
-        function checkAnswer(selectedIndex) {
+        async function checkAnswer(selectedIndex) {
+            if (!uid) return;
+            const ref = doc(db, "users", uid);
+            const data = snap.data();
+
             if (selectedIndex === correctAnswerIndex) {
+                coins = data.coins;
                 const coinsEarned = currentDifficulty * 10;
                 coins += coinsEarned;
                 currentDifficulty = Math.min(5, currentDifficulty + 1);
+
+                await updateDoc(ref, {
+                    coins: coins,
+                });
                 
                 optionButtons[selectedIndex].classList.add('correct');
                 showSuccess(`Correct! You earned ${coinsEarned} coins`);
@@ -362,6 +371,7 @@
             
             difficultyDisplay.textContent = `Difficulty: ${currentDifficulty}`;
             updateCoinsDisplay();
+
         }
         
         function updateCoinsDisplay() {
