@@ -196,30 +196,6 @@
         <img id="backgroundMedia" src="Screen Shot 2025-06-06 at 12.17.59 PM.png">
     </div>
 
-    <button class="interactive-area face-area" onclick="playVideoBasedOnIntimacy('face')">face</button>
-    <button class="interactive-area hand-area" onclick="playVideoBasedOnIntimacy('hand')">hand</button>
-    <button class="interactive-area weapon-area" onclick="playVideoBasedOnIntimacy('weapon')">weapon</button>
-
-    <div class="menu">         
-        <button class="menu-button" onclick="window.location.href='Quiz.html'">Gain coins!</button>         
-        <button class="menu-button" onclick="window.location.href='chat.html'">Let's talk</button>         
-        <button class="menu-button" id="loginButton" onclick="window.location.href='./LogIn.html'">Log In</button>     
-    </div>
-
-    <div class="side-menu">
-        <div class="stats-container">
-            <div class="stat-display">
-                <div class="stat-title">Intimacy Level</div>
-                <div class="stat-value intimacy-value" id="intimacyValue">0</div>
-            </div>
-            
-            <div class="stat-display">
-                <div class="stat-title">Coins</div>
-                <div class="stat-value coin-value" id="coinValue">0 <span>🪙</span></div>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
 
         import {initAuthListener} from "./isSignedIn.js";
@@ -310,5 +286,29 @@
 
         document.addEventListener("DOMContentLoaded", loadStats);
     </script>
+
+    <button class="interactive-area face-area" onclick="playVideoBasedOnIntimacy('face')">face</button>
+    <button class="interactive-area hand-area" onclick="playVideoBasedOnIntimacy('hand')">hand</button>
+    <button class="interactive-area weapon-area" onclick="playVideoBasedOnIntimacy('weapon')">weapon</button>
+
+    <div class="menu">         
+        <button class="menu-button" onclick="window.location.href='Quiz.html'">Gain coins!</button>         
+        <button class="menu-button" onclick="window.location.href='chat.html'">Let's talk</button>         
+        <button class="menu-button" id="loginButton" onclick="window.location.href='./LogIn.html'">Log In</button>     
+    </div>
+
+    <div class="side-menu">
+        <div class="stats-container">
+            <div class="stat-display">
+                <div class="stat-title">Intimacy Level</div>
+                <div class="stat-value intimacy-value" id="intimacyValue">0</div>
+            </div>
+            
+            <div class="stat-display">
+                <div class="stat-title">Coins</div>
+                <div class="stat-value coin-value" id="coinValue">0 <span>🪙</span></div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
