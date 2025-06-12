@@ -247,6 +247,17 @@
 
         import { auth, db, doc, onAuthStateChanged, updateDoc, arrayUnion, setDoc, getDoc } from "./firebaseInitializing.js?v1.0.3";
 
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                uid = user.uid;
+                const ref = doc(db, "users", uid);
+                const snap = await getDoc(ref);
+            } else {
+                alert("You must be signed in to do the quiz.");
+                window.location.href = "/LogIn.html";
+            }
+        });
+
         let uid = null;
 
         // App State
@@ -413,21 +424,6 @@
                 [array[i], array[j]] = [array[j], array[i]];
             }
         }
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                uid = user.uid;
-                const ref = doc(db, "users", uid);
-                const snap = await getDoc(ref);
-                await loadConversation();
-                if (!snap.exists()) {
-                    await setDoc(ref, { conversation: [] });
-                }
-            } else {
-                alert("You must be signed in to do the quiz.");
-                window.location.href = "/LogIn.html";
-            }
-        });
         
         // Initialize the app
         init();
