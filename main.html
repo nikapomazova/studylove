@@ -209,6 +209,7 @@
                 uid = user.uid;
                 const ref = doc(db, "users", uid);
                 const snap = await getDoc(ref);
+                loadStats();
             } else {
                 alert("You must be signed in.");
                 window.location.href = "/LogIn.html";
@@ -323,8 +324,6 @@
             document.getElementById('intimacyValue').textContent = intimacyLevel;
         }
 
-        loadStats();
-        
     </script>
 
     <button class="interactive-area face-area" onclick="playVideoBasedOnIntimacy('face')">face</button>
