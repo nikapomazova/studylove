@@ -46,7 +46,6 @@ signButton.addEventListener("click", async () => {
             await setDoc(doc(db, "users", user.uid), {
                 name: name,
                 email: email,
-                quizAnswers: [],
               });
         
             //send verification email
