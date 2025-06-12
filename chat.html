@@ -113,6 +113,33 @@
         background-color: #772c33;
         transform: scale(1.1);
     }
+
+    .progress-container {
+        width: 80%;
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 20px;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 5px;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background-color: #d98890;
+        transition: width 0.3s ease;
+    }
+
+    .progress-text {
+        font-weight: bold;
+        color: #772c33;
+        margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
@@ -122,8 +149,12 @@
         </button>
     </section>
     <div class="title">Chat</div>
-    <div id="intimacyDisplay" style="text-align:center; font-weight:bold; margin:10px;">
-      Intimacy Level: 1
+    <div class="progress-container">
+        <div class="progress-text" id="intimacyDisplay">Intimacy Level: 1</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div id="progressText">0/10 messages to next level</div>
     </div>
     <div class="container">
         <div class="chat-area" id="chatArea"></div>
@@ -148,9 +179,28 @@
     const userInput = document.getElementById('userInput');
     const sendButton = document.getElementById('sendButton');
     const intimacyDisplay = document.getElementById('intimacyDisplay');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
 
-    // Initialize intimacy display
-    intimacyDisplay.textContent = `Intimacy Level: ${intimacyLevel}`;
+    // Initialize progress display
+    updateProgressDisplay();
+
+    function updateProgressDisplay() {
+        const messagesToNextLevel = 10 - (userMessageCount % 10);
+        const progressPercentage = ((userMessageCount % 10) / 10) * 100;
+        
+        intimacyDisplay.textContent = `Intimacy Level: ${intimacyLevel}`;
+        progressFill.style.width = `${progressPercentage}%`;
+        progressText.textContent = `${userMessageCount % 10}/10 messages to next level`;
+        
+        // Add celebration effect when leveling up
+        if (userMessageCount % 10 === 0 && userMessageCount > 0) {
+            progressFill.style.backgroundColor = '#ffcc00';
+            setTimeout(() => {
+                progressFill.style.backgroundColor = '#d98890';
+            }, 1000);
+        }
+    }
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -181,7 +231,7 @@
         localStorage.setItem('userMessageCount', userMessageCount);
         localStorage.setItem('intimacyLevel', intimacyLevel);
 
-        intimacyDisplay.textContent = `Intimacy Level: ${intimacyLevel}`;
+        updateProgressDisplay();
 
         displayMessage(promptText, 'user');
         userInput.value = '';
@@ -190,6 +240,11 @@
         const aiResponse = await getGeminiResponse(promptText);
         displayMessage(aiResponse, 'ai');
         await saveToFirestore({ role: 'ai', content: aiResponse });
+        
+        if (typeof BroadcastChannel !== 'undefined') {
+            const channel = new BroadcastChannel('intimacy_updates');
+            channel.postMessage({ intimacyLevel });
+        }
     }
 
     async function loadConversation() {
@@ -209,6 +264,11 @@
             for (const message of conversation) {
                 displayMessage(message.content, message.role);
             }
+            
+            // Update message count from loaded conversation
+            userMessageCount = conversation.filter(m => m.role === 'user').length;
+            intimacyLevel = Math.floor(userMessageCount / 10) + 1;
+            updateProgressDisplay();
         }
     }
 

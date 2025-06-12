@@ -45,7 +45,6 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            
         }
 
         .interactive-area {
@@ -54,6 +53,13 @@
             border: 2px solid white;
             cursor: pointer;
             z-index: 2;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .interactive-area:hover {
+            opacity: 1;
+            border-color: var(--accent);
         }
 
         .face-area {
@@ -62,6 +68,7 @@
             transform: translateX(-50%);
             width: 200px;
             height: 200px;
+            border-radius: 50%;
         }
 
         .hand-area {
@@ -69,6 +76,7 @@
             left: 35%;
             width: 150px;
             height: 150px;
+            border-radius: 50%;
         }
 
         .weapon-area {
@@ -76,6 +84,7 @@
             left: 60%;
             width: 200px;
             height: 200px;
+            border-radius: 50%;
         }
 
         .menu {
@@ -111,6 +120,10 @@
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
+        }
+
+        .menu-button:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .side-menu {
@@ -171,6 +184,10 @@
                 width: 120px !important;
                 height: 120px !important;
             }
+            .side-menu {
+                right: 10px;
+                padding: 15px;
+            }
         }
     </style>
 </head>
@@ -179,9 +196,9 @@
         <img id="backgroundMedia" src="Screen Shot 2025-06-06 at 12.17.59 PM.png">
     </div>
 
-    <button class="interactive-area face-area" onclick="swapMedia('Untitled Video June 6, 2025 12_12 PM.mp4')"></button>
-    <button class="interactive-area hand-area" onclick="swapMedia('Untitled Video June 6, 2025 12_12 PM.mp4')"></button>
-    <button class="interactive-area weapon-area" onclick="swapMedia('Untitled Video June 6, 2025 12_12 PM.mp4')"></button>
+    <button class="interactive-area face-area" onclick="playVideoBasedOnIntimacy('face')"></button>
+    <button class="interactive-area hand-area" onclick="playVideoBasedOnIntimacy('hand')"></button>
+    <button class="interactive-area weapon-area" onclick="playVideoBasedOnIntimacy('weapon')"></button>
 
     <div class="menu">         
         <button class="menu-button" onclick="window.location.href='Quiz.html'">Gain coins!</button>         
@@ -205,6 +222,41 @@
 
     <script>
         let currentVideo = null;
+        const videoMap = {
+            1: {
+                face: 'level1_face.mp4',
+                hand: 'level1_hand.mp4',
+                weapon: 'level1_weapon.mp4'
+            },
+            2: {
+                face: 'level2_face.mp4',
+                hand: 'level2_hand.mp4',
+                weapon: 'level2_weapon.mp4'
+            },
+            // Add more levels as needed
+        };
+
+        function playVideoBasedOnIntimacy(area) {
+            const intimacyLevel = parseInt(localStorage.getItem('intimacyLevel')) || 1;
+            const videos = videoMap[intimacyLevel] || videoMap[1]; // Default to level 1 if no mapping exists
+            
+            let videoFile;
+            switch(area) {
+                case 'face':
+                    videoFile = videos.face;
+                    break;
+                case 'hand':
+                    videoFile = videos.hand;
+                    break;
+                case 'weapon':
+                    videoFile = videos.weapon;
+                    break;
+                default:
+                    videoFile = videos.face;
+            }
+            
+            swapMedia(videoFile);
+        }
 
         function swapMedia(mediaUrl) {
             const mediaLayer = document.querySelector('.media-layer');
