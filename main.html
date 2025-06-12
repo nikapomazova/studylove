@@ -214,6 +214,9 @@
                 window.location.href = "/LogIn.html";
             }
         });
+        document.addEventListener("DOMContentLoaded", () => {
+            loadStats();
+        });
 
         let currentVideo = null;
         const videoMap = {
@@ -322,10 +325,6 @@
             `${coins} 🪙`;
             document.getElementById('intimacyValue').textContent = intimacyLevel;
         }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            loadStats();
-        });
     </script>
 
     <button class="interactive-area face-area" onclick="playVideoBasedOnIntimacy('face')">face</button>
