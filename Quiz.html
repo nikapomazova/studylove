@@ -357,7 +357,7 @@
             const data = snap.data();
 
             if (selectedIndex === correctAnswerIndex) {
-                coins = data.coins;
+                coins = data.coins ?? 0;
                 const coinsEarned = currentDifficulty * 10;
                 coins += coinsEarned;
                 currentDifficulty = Math.min(5, currentDifficulty + 1);
