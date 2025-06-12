@@ -236,11 +236,11 @@
                 const data = snap.data();
                 const messages = data.conversation || [];
 
-                intimacyLevel = Math.floor(messages.filter(msg => msg.role === "user").length / 10) + 1;
+                let intimacyLevel = Math.floor(messages.filter(msg => msg.role === "user").length / 10) + 1;
                 if (intimacyLevel>1) {
                     swapMedia("picture_2.png");
                 }
-                
+
                 loadStats();
             } else {
                 alert("You must be signed in.");
@@ -357,8 +357,8 @@
         }
 
         document.getElementById("faceButton").addEventListener("click", playVideoBasedOnIntimacy('face'));
-        document.getElementById("handButton").addEventListener("click", playVideoBasedOnIntimacy('hand'));
-        document.getElementById("weaponButton").addEventListener("click", playVideoBasedOnIntimacy('weapon'));
+        // document.getElementById("handButton").addEventListener("click", playVideoBasedOnIntimacy('hand'));
+        // document.getElementById("weaponButton").addEventListener("click", playVideoBasedOnIntimacy('weapon'));
 
     </script>
 </body>
