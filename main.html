@@ -50,7 +50,7 @@
         .interactive-area {
             position: absolute;
             background: transparent;
-            border: none;
+            border: 2px;
             cursor: pointer;
             z-index: 2;
             opacity: 0;
@@ -193,7 +193,7 @@
 </head>
 <body>
     <div class="media-layer">
-        <img id="backgroundMedia" src="Screen Shot 2025-06-06 at 12.17.59 PM.png">
+        <img id="backgroundMedia" src="picture_1.jpg">
     </div>
 
     <button class="interactive-area face-area" id = "faceButton"></button>
@@ -233,6 +233,14 @@
                 uid = user.uid;
                 const ref = doc(db, "users", uid);
                 const snap = await getDoc(ref);
+                const data = snap.data();
+                const messages = data.conversation || [];
+
+                intimacyLevel = Math.floor(messages.filter(msg => msg.role === "user").length / 10) + 1;
+                if (intimacyLevel>1) {
+                    swapMedia("picture_2.png");
+                }
+                
                 loadStats();
             } else {
                 alert("You must be signed in.");
