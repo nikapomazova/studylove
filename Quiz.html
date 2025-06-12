@@ -247,7 +247,7 @@
 
         import { auth, db, doc, onAuthStateChanged, updateDoc, arrayUnion, setDoc, getDoc } from "./firebaseInitializing.js?v1.0.3";
 
-        let user = null;
+        let uid = null;
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
