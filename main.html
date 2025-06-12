@@ -220,7 +220,11 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+
+        import {initAuthListener} from "./isSignedIn.js";
+        document.addEventListener('DOMContentLoaded', initAuthListener);
+
         let currentVideo = null;
         const videoMap = {
             1: {
