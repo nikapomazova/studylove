@@ -250,8 +250,6 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 uid = user.uid;
-                const ref = doc(db, "users", uid);
-                const snap = await getDoc(ref);
             } else {
                 alert("You must be signed in to do the quiz.");
                 window.location.href = "/LogIn.html";
