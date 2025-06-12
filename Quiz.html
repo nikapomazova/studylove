@@ -243,7 +243,25 @@
         </div>
     </div>
     
-    <script>
+    <script type="module">
+
+        let user = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                uid = user.uid;
+                const ref = doc(db, "users", uid);
+                const snap = await getDoc(ref);
+                await loadConversation();
+                if (!snap.exists()) {
+                    await setDoc(ref, { conversation: [] });
+                }
+            } else {
+                alert("You must be signed in to do the quiz.");
+                window.location.href = "/LogIn.html";
+            }
+      });
+
         // App State
         let currentDifficulty = 1;
         let correctAnswerIndex = -1;
