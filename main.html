@@ -59,7 +59,7 @@
 
         .interactive-area:hover {
             opacity: 1;
-            border-color: none;
+            border-color: black;
         }
 
         .face-area {
@@ -356,7 +356,9 @@
             document.getElementById('intimacyValue').textContent = intimacyLevel;
         }
 
-        document.getElementById("faceButton").addEventListener("click", playVideoBasedOnIntimacy('face'));
+        document.getElementById("faceButton").addEventListener("click", () => {
+            playVideoBasedOnIntimacy('face');
+        });
         // document.getElementById("handButton").addEventListener("click", playVideoBasedOnIntimacy('hand'));
         // document.getElementById("weaponButton").addEventListener("click", playVideoBasedOnIntimacy('weapon'));
 
