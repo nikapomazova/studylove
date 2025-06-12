@@ -290,14 +290,16 @@
         async function updateUserStats() {
             if (!uid) return;
 
+            const ref = doc(db, "users", uid);
+            const snap = await getDoc(ref);
+
             if (!snap.exists()) return;
 
             const data = snap.data();
             const messages = data.conversation || [];
 
-            //count user messages
-            const userMessageCount = messages.filter(msg => msg.role === "user").length;
-            let intimacyLevel = Math.floor(userMessageCount / 10) + 1;
+            const coins = data.coins ?? 0;
+            const intimacyLevel = Math.floor(messages.filter(msg => msg.role === "user").length / 10) + 1;
 
             // Save to Firestore
             await updateDoc(ref, {
@@ -315,7 +317,9 @@
             document.getElementById('intimacyValue').textContent = intimacy;
         }
 
-        document.addEventListener("DOMContentLoaded", updateUserStats());
+        document.addEventListener("DOMContentLoaded", () => {
+            updateUserStats();
+        });
     </script>
 
     <button class="interactive-area face-area" onclick="playVideoBasedOnIntimacy('face')">face</button>
