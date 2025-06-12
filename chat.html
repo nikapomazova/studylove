@@ -281,15 +281,18 @@
             //count user messages
             const userMessageCount = messages.filter(msg => msg.role === "user").length;
             let intimacyLevel = Math.floor(userMessageCount / 10) + 1;
-            let coins = data.coins;
 
             // Save to Firestore
             await updateDoc(ref, {
-                coins: totalCoins,
-                affectionLevel: affectionLevel
+                coins: coins,
+                affectionLevel: intimacyLevel
             });
 
             updateProgressDisplay(userMessageCount, intimacyLevel);
+            if (typeof BroadcastChannel !== 'undefined') {
+              const channel = new BroadcastChannel('intimacy_updates');
+              channel.postMessage({ intimacyLevel });
+            }
         }
   
       sendButton.addEventListener('click', handleUserMessage);
@@ -310,6 +313,9 @@
           // Deduct coins
           coins -= 5;
           localStorage.setItem('quizCoins', coins.toString());
+          await updateDoc(doc(db, "users", uid), {
+            coins: coins
+          });
           updateUserStats();
           
           // Notify other tabs about coin change
@@ -332,11 +338,6 @@
           const aiResponse = await getGeminiResponse(promptText);
           displayMessage(aiResponse, 'ai');
           await saveToFirestore({ role: 'ai', content: aiResponse });
-          
-          if (typeof BroadcastChannel !== 'undefined') {
-              const channel = new BroadcastChannel('intimacy_updates');
-              channel.postMessage({ intimacyLevel });
-          }
       }
   
       // Listen for coin updates from other tabs
@@ -367,9 +368,9 @@
               }
               
               // Update message count from loaded conversation
-              userMessageCount = conversation.filter(m => m.role === 'user').length;
-              intimacyLevel = Math.floor(userMessageCount / 10) + 1;
-              updateProgressDisplay();
+              let userMessageCount = conversation.filter(m => m.role === 'user').length;
+              let intimacyLevel = Math.floor(userMessageCount / 10) + 1;
+              updateProgressDisplay(userMessageCount, intimacyLevel);
           }
       }
   
