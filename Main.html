@@ -129,7 +129,7 @@
     <div class="menu">
         <button class="menu-button" onclick="window.location.href='Quiz.html'" >Gain coins!</button>
         <button class="menu-button" onclick="window.location.href='chat.html'">Let's talk</button>
-       
+        <button class="menu-button" id = "loginButton" onclick="window.location.href='./LogIn.html'">Log In</button>
     </div>
 
     <!-- Side menu -->
@@ -137,8 +137,11 @@
         
     </div>
 
-    <script>
-        // Global reference to avoid duplicate elements
+    <script type="module">
+
+        import {initAuthListener} from "./isSignedIn.js?v1.1";
+        document.addEventListener('DOMContentLoaded', initAuthListener);
+
         let currentVideo = null;
 
         function swapMedia(mediaUrl) {
