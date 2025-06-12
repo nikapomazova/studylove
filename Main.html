@@ -5,16 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Love and Deepseek</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #ff4d79;
+            --secondary: #6a5acd;
+            --accent: #00e5ff;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --light: #e0e0ff;
+            --overlay: rgba(10, 10, 26, 0.85);
+            --coin-color: #ffd54f;
+        }
+        
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             overflow: hidden;
+            color: var(--light);
+            background-color: var(--darker);
         }
 
-        /* Unified media layer (for both bg and videos) */
         .media-layer {
             position: fixed;
             top: 0;
@@ -25,136 +39,183 @@
             overflow: hidden;
         }
 
-        /* Background image (default state) */
         #backgroundMedia {
             position: absolute;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ensures full coverage */
+            object-fit: cover;
             object-position: center;
+            
         }
 
-        /* Interactive buttons (visible for testing) */
         .interactive-area {
             position: absolute;
             background: transparent;
-            border: 2px dashed rgba(255, 255, 0, 0.8);
+            border: 2px solid white;
             cursor: pointer;
             z-index: 2;
-            transition: all 0.3s;
         }
 
-        .interactive-area:hover {
-            background: rgba(255, 255, 0, 0.2);
-        }
-
-        /* Button positions */
         .face-area {
             top: 25%;
             left: 50%;
             transform: translateX(-50%);
-            width: 20%;
-            height: 25%;
-            border-color: rgba(255, 0, 0, 0.8);
+            width: 200px;
+            height: 200px;
         }
 
         .hand-area {
             top: 55%;
             left: 35%;
-            width: 15%;
-            height: 15%;
-            border-color: rgba(0, 255, 0, 0.8);
+            width: 150px;
+            height: 150px;
         }
 
         .weapon-area {
             top: 50%;
             left: 60%;
-            width: 20%;
-            height: 25%;
-            border-color: rgba(0, 0, 255, 0.8);
+            width: 200px;
+            height: 200px;
         }
 
-        /* UI Menus */
         .menu {
             position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 80px;
-            background: rgba(0, 0, 0, 0.7);
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            height: 70px;
+            background: var(--overlay);
             display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 3;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .menu-button {
-            color: white;
+            color: var(--light);
             background: transparent;
             border: none;
-            font-size: 16px;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background 0.3s;
+            padding: 12px 24px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
         .side-menu {
             position: fixed;
-            right: 10px;
+            right: 20px;
             top: 50%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
             gap: 15px;
             z-index: 3;
+            background: var(--overlay);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .stat-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-title {
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .coin-value {
+            color: var(--coin-color);
+            text-shadow: 0 0 5px rgba(255, 213, 79, 0.5);
+        }
+
+        .intimacy-value {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .interactive-area {
+                width: 120px !important;
+                height: 120px !important;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Unified media layer -->
     <div class="media-layer">
-        <!-- 
-            Single element for both bg and videos.
-            Starts as background image, swaps to video on interaction.
-        -->
-        <img id="backgroundMedia" src="/Users/Emily/Downloads/Grade 12 CS/summative/Screen Shot 2025-06-06 at 12.17.59 PM.png">
+        <img id="backgroundMedia" src="Screen Shot 2025-06-06 at 12.17.59 PM.png">
     </div>
 
-    <!-- Interactive buttons -->
-    <button class="interactive-area face-area" onclick="swapMedia('/Users/Emily/Downloads/Grade 12 CS/summative/Untitled Video June 6, 2025 12_12 PM.mp4')">Face</button>
-    <button class="interactive-area hand-area" onclick="swapMedia('https://example.com/hand_video.mp4')">Hand</button>
-    <button class="interactive-area weapon-area" onclick="swapMedia('https://example.com/weapon_video.mp4')">Weapon</button>
+    <button class="interactive-area face-area" onclick="swapMedia('Untitled Video June 6, 2025 12_12 PM.mp4')"></button>
+    <button class="interactive-area hand-area" onclick="swapMedia('Untitled Video June 6, 2025 12_12 PM.mp4')"></button>
+    <button class="interactive-area weapon-area" onclick="swapMedia('Untitled Video June 6, 2025 12_12 PM.mp4')"></button>
 
-    <!-- Bottom menu -->
-    <div class="menu">
-        <button class="menu-button" onclick="window.location.href='Quiz.html'" >Gain coins!</button>
-        <button class="menu-button" onclick="window.location.href='chat.html'">Let's talk</button>
-        <button class="menu-button" id = "loginButton" onclick="window.location.href='./LogIn.html'">Log In</button>
+    <div class="menu">         
+        <button class="menu-button" onclick="window.location.href='Quiz.html'">Gain coins!</button>         
+        <button class="menu-button" onclick="window.location.href='chat.html'">Let's talk</button>         
+        <button class="menu-button" id="loginButton" onclick="window.location.href='./LogIn.html'">Log In</button>     
     </div>
 
-    <!-- Side menu -->
     <div class="side-menu">
-        
+        <div class="stats-container">
+            <div class="stat-display">
+                <div class="stat-title">Intimacy Level</div>
+                <div class="stat-value intimacy-value" id="intimacyValue">0</div>
+            </div>
+            
+            <div class="stat-display">
+                <div class="stat-title">Coins</div>
+                <div class="stat-value coin-value" id="coinValue">0 <span>🪙</span></div>
+            </div>
+        </div>
     </div>
 
-    <script type="module">
-
-        import {initAuthListener} from "./isSignedIn.js?v1.1";
-        document.addEventListener('DOMContentLoaded', initAuthListener);
-
+    <script>
         let currentVideo = null;
 
         function swapMedia(mediaUrl) {
             const mediaLayer = document.querySelector('.media-layer');
             const bgMedia = document.getElementById('backgroundMedia');
-            
-            // If video is already playing, remove it
+
+            // Remove existing video if any
             if (currentVideo) {
                 mediaLayer.removeChild(currentVideo);
                 currentVideo = null;
             }
 
-            // Create video element
             if (mediaUrl.endsWith('.mp4')) {
                 currentVideo = document.createElement('video');
                 currentVideo.src = mediaUrl;
@@ -165,23 +226,33 @@
                 currentVideo.style.height = '100%';
                 currentVideo.style.objectFit = 'cover';
                 currentVideo.style.objectPosition = 'center';
-                
-                // Replace background with video
+
                 mediaLayer.insertBefore(currentVideo, bgMedia);
                 bgMedia.style.display = 'none';
-                
-                // Restore background when video ends
-                currentVideo.onended = function() {
+
+                currentVideo.onended = function () {
                     mediaLayer.removeChild(currentVideo);
                     bgMedia.style.display = 'block';
                     currentVideo = null;
                 };
-            } 
-            // For images (if needed)
-            else {
+            } else {
                 bgMedia.src = mediaUrl;
+                bgMedia.style.display = 'block';
             }
         }
+
+        function loadStats() {
+            if (localStorage.getItem('quizCoins')) {
+                document.getElementById('coinValue').textContent =
+                    `${localStorage.getItem('quizCoins')} 🪙`;
+            }
+            if (localStorage.getItem('intimacyLevel')) {
+                document.getElementById('intimacyValue').textContent =
+                    localStorage.getItem('intimacyLevel');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadStats);
     </script>
 </body>
 </html>
