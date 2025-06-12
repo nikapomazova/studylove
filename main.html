@@ -198,8 +198,22 @@
 
     <script type="module">
 
+        import { auth, db, doc, onAuthStateChanged, updateDoc, arrayUnion, setDoc, getDoc } from "./firebaseInitializing.js?v1.0.3";
+        
+        let uid = null;
+
         import {initAuthListener} from "./isSignedIn.js";
         document.addEventListener('DOMContentLoaded', initAuthListener);
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                uid = user.uid;
+                const ref = doc(db, "users", uid);
+                const snap = await getDoc(ref);
+            } else {
+                alert("You must be signed in.");
+                window.location.href = "/LogIn.html";
+            }
+        });
 
         let currentVideo = null;
         const videoMap = {
@@ -273,25 +287,42 @@
             }
         }
 
-        function loadStats() {
-            if (localStorage.getItem('quizCoins')) {
-                document.getElementById('coinValue').textContent =
-                    `${localStorage.getItem('quizCoins')} 🪙`;
-            }
-            if (localStorage.getItem('intimacyLevel')) {
-                document.getElementById('intimacyValue').textContent =
-                    localStorage.getItem('intimacyLevel');
-            }
+        async function updateUserStats() {
+            if (!uid) return;
+
+            if (!snap.exists()) return;
+
+            const data = snap.data();
+            const messages = data.conversation || [];
+
+            //count user messages
+            const userMessageCount = messages.filter(msg => msg.role === "user").length;
+            let intimacyLevel = Math.floor(userMessageCount / 10) + 1;
+
+            // Save to Firestore
+            await updateDoc(ref, {
+                coins: coins,
+                affectionLevel: intimacyLevel
+            });
+
+            loadStats(coins, intimacyLevel);
+
         }
 
-        document.addEventListener("DOMContentLoaded", loadStats);
+        function loadStats(coins, intimacy) {
+            document.getElementById('coinValue').textContent =
+            `${coins} 🪙`;
+            document.getElementById('intimacyValue').textContent = intimacy;
+        }
+
+        document.addEventListener("DOMContentLoaded", updateUserStats());
     </script>
 
     <button class="interactive-area face-area" onclick="playVideoBasedOnIntimacy('face')">face</button>
     <button class="interactive-area hand-area" onclick="playVideoBasedOnIntimacy('hand')">hand</button>
     <button class="interactive-area weapon-area" onclick="playVideoBasedOnIntimacy('weapon')">weapon</button>
 
-    <div class="menu">         
+    <div class="menu">
         <button class="menu-button" onclick="window.location.href='Quiz.html'">Gain coins!</button>         
         <button class="menu-button" onclick="window.location.href='chat.html'">Let's talk</button>         
         <button class="menu-button" id="loginButton" onclick="window.location.href='./LogIn.html'">Log In</button>     
