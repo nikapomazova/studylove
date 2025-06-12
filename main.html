@@ -287,7 +287,7 @@
             }
         }
 
-        async function updateUserStats() {
+        async function loadStats() {
             if (!uid) return;
 
             const ref = doc(db, "users", uid);
@@ -298,27 +298,16 @@
             const data = snap.data();
             const messages = data.conversation || [];
 
-            const coins = data.coins ?? 0;
+            const coins = data.coins || 0;
             const intimacyLevel = Math.floor(messages.filter(msg => msg.role === "user").length / 10) + 1;
 
-            // Save to Firestore
-            await updateDoc(ref, {
-                coins: coins,
-                affectionLevel: intimacyLevel
-            });
-
-            loadStats(coins, intimacyLevel);
-
-        }
-
-        function loadStats(coins, intimacy) {
             document.getElementById('coinValue').textContent =
             `${coins} 🪙`;
-            document.getElementById('intimacyValue').textContent = intimacy;
+            document.getElementById('intimacyValue').textContent = intimacyLevel;
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            updateUserStats();
+            loadStats();
         });
     </script>
 
