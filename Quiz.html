@@ -339,6 +339,7 @@
         async function checkAnswer(selectedIndex) {
             if (!uid) return;
             const ref = doc(db, "users", uid);
+            const snap = await getDoc(ref);
             const data = snap.data();
 
             if (selectedIndex === correctAnswerIndex) {
