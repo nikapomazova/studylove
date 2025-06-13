@@ -369,7 +369,7 @@
                 optionButtons[selectedIndex].classList.add('correct');
                 showSuccess(`Correct! You earned ${coinsEarned} coins`);
             } else {
-                currentDifficulty = Math.max(1, currentDifficulty - 1);
+                currentDifficulty = 1;
                 
                 optionButtons[selectedIndex].classList.add('wrong');
                 optionButtons[correctAnswerIndex].classList.add('correct');
